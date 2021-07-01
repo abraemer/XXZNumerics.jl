@@ -1,0 +1,13 @@
+name = "XXZNumerics"
+uuid = "df0c8232-4a8d-40d6-8487-e9f918bc1c27"
+authors = ["Adrian Braemer <11058200+abraemer@users.noreply.github.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
