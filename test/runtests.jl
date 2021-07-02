@@ -1,4 +1,4 @@
-using Base: disable_library_threading, power_by_squaring
+using Base: _sysimage_modules
 using XXZNumerics
 using Test, Statistics, Random, LinearAlgebra
 
@@ -7,4 +7,6 @@ using Test, Statistics, Random, LinearAlgebra
     include("geometry.jl")
 
     include("interaction.jl")
+
+    include("spin_half.jl")
 end
