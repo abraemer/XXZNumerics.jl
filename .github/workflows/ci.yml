@@ -23,12 +23,12 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Setup Julia environment
-        uses: julia-actions/setup-julia@v1.6.1
+        uses: julia-actions/setup-julia@v1.6.0
         with:
-          version: 1.6.1
+          version: 1.6.0
       
       - name: Run Julia package tests
-        uses: julia-actions/julia-runtest@v1.6.1
+        uses: julia-actions/julia-runtest@v1.6.0
         with:
           coverage: true# optional, default is true
           depwarn: no# optional, default is yes
