@@ -33,7 +33,7 @@ jobs:
           coverage: true
           depwarn: no
           # If true, then, for each [compat] entry in the active project, only allow the latest compatible version. If the value is auto and the pull request has been opened by Dependabot or CompatHelper, then force_latest_compatible_version will be set to true, otherwise it will be set to false. Options: true | false | auto. Default value: auto.
-          force_latest_compatible_version: auto# optional, default is auto
+          force_latest_compatible_version: auto
           
       - name: Codecov
         uses: codecov/codecov-action@v1.5.2
