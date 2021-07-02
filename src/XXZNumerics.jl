@@ -6,5 +6,6 @@ using LinearAlgebra
 
 
 include("geometry.jl")
+include("interaction.jl")
 
 end
