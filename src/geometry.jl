@@ -11,7 +11,7 @@ abstract type Geometry end
 
 Generate a new (random) point in the geometry.
 """
-function generate_point(geometry::Geometry)
+function generate_point(::Geometry)
     error("Not implemented!")
 end
 
@@ -22,7 +22,7 @@ _euclidean_point(lengths) = rand(length(lengths)) .* lengths
 
 Compute the distance of two points p1 and p2 within the given geometry.
 """
-function distance(geometry::Geometry, p1, p2)
+function distance(::Geometry, p1, p2)
     error("Not implemented!")
 end
 
@@ -33,10 +33,13 @@ function _euclidean(p1, p2)
 end
 
 function _euclidean_pbc(p1, p2, lengths)
-    diff = @. abs(mod(p1, lengths) - mod(p2, lengths))
-    dim_mask = diff .> lengths./2
-    diff[dim_mask] .-= lengths[dim_mask]
-    sqrt(sum(diff.^2))
+    diffs = _euclidean_pbc.(p1, p2, lengths)
+    sqrt(sum(diffs.^2))
+end
+
+function _euclidean_pbc(x1::Number, x2::Number, length::Number)
+    diff = abs(mod(x1, length) - mod(x2, length))
+    diff > length/2 ? length-diff : diff
 end
 
 """
@@ -129,8 +132,6 @@ end
 
 distance(::NoisyChain, p1, p2) = _euclidean(p1, p2)
 
-generate_point(chain::NoisyChain, site=1) = chain.σ * (2*rand()-1) + site*chain.spacing
-
 """
     NoisyChainPBC
 
@@ -148,13 +149,13 @@ struct NoisyChainPBC
     σ::Float64
 end
 
-_chain_length(chain::NoisyChainPBC) = chain.L * chain.spacing
+distance(chain::NoisyChainPBC, p1, p2) = _euclidean_pbc(p1, p2, chain.L * chain.spacing)
 
-distance(chain::NoisyChainPBC, p1, p2) = _euclidean_pbc(p1, p2, _chain_length(chain))
-
-generate_point(chain::NoisyChainPBC, site=1) = mod(chain.σ * (2*rand()-1) + site*chain.spacing,  _chain_length(chain))
 
 ## chain types need to now at which site to generate the points
+
+generate_point(chain::Union{NoisyChain, NoisyChainPBC}, site=1) = chain.σ * (2*rand()-1) + site*chain.spacing
+
 function _find_new_point(chain::Union{NoisyChain, NoisyChainPBC}, points, blockade_radius, max_iter)
     site = length(points) + 1
     for _ in 1:max_iter
