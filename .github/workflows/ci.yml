@@ -23,22 +23,24 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Setup Julia environment
-        uses: julia-actions/setup-julia@v1.6.0
+        uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
       
       - name: Run Julia package tests
-        uses: julia-actions/julia-runtest@v1.6.0
+        uses: julia-actions/julia-runtest@latest
         with:
           coverage: true
           depwarn: no
           # If true, then, for each [compat] entry in the active project, only allow the latest compatible version. If the value is auto and the pull request has been opened by Dependabot or CompatHelper, then force_latest_compatible_version will be set to true, otherwise it will be set to false. Options: true | false | auto. Default value: auto.
           force_latest_compatible_version: auto
           
+      - uses: julia-actions/julia-processcoverage@latest
+      
       - name: Codecov
-        uses: codecov/codecov-action@v1.5.2
+        uses: codecov/codecov-action@v1
         with:
-          file: ./lcov.info
+          file: lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
