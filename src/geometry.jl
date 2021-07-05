@@ -2,7 +2,7 @@ export sample_blockaded, distance, distance_matrix, Box, BoxPBC, NoisyChain, Noi
 
 ## TODO: abstract Lattice geometries and put chains as subtypes
 ##       lattices need to know at which site to generate a new point
-## TODO: orthogonalize PBC types
+## TODO: orthogonalize PBC types?
 
 abstract type Geometry end
 
@@ -11,10 +11,9 @@ abstract type Geometry end
 
 Generate a new (random) point in the geometry.
 """
-function generate_point(::Geometry)
-    error("Not implemented!")
-end
+function generate_point end
 
+# default
 _euclidean_point(lengths) = rand(length(lengths)) .* lengths
 
 """
@@ -22,9 +21,7 @@ _euclidean_point(lengths) = rand(length(lengths)) .* lengths
 
 Compute the distance of two points p1 and p2 within the given geometry.
 """
-function distance(::Geometry, p1, p2)
-    error("Not implemented!")
-end
+function distance end
 
 ## two default implementations
 
