@@ -1,5 +1,5 @@
 @testset "spin_half.jl" begin
-    # note 
+ 
     @testset "single_spin_op" begin
         @test single_spin_op(σz, 1, 2) ≈ Diagonal([1,1,-1,-1])
         @test single_spin_op(σz, 2, 2) ≈ Diagonal([1,-1,1,-1])

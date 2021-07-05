@@ -8,4 +8,6 @@ using Test, Statistics, Random, LinearAlgebra
     include("interaction.jl")
 
     include("spin_half.jl")
+
+    include("hamiltonian.jl")
 end
