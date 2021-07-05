@@ -1,3 +1,4 @@
+using Base: escape_microsoft_c_args
 using XXZNumerics
 using Test, Statistics, Random, LinearAlgebra
 
@@ -10,4 +11,6 @@ using Test, Statistics, Random, LinearAlgebra
     include("spin_half.jl")
 
     include("hamiltonian.jl")
+
+    include("thermalization.jl")
 end
