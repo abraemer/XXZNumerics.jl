@@ -14,4 +14,9 @@
     @test symmetrize_op(σz ⊗ σz, -1) ≈ σz
     @test symmetrize_op(σx ⊗ σx) ≈ identity_op(1)
     @test symmetrize_op(σx ⊗ σx + σy ⊗ σy) ≈ Diagonal([0, 2]) # hopping operator
+
+    @test correlator(σx, 1, 2, 2) ≈ σx ⊗ σx
+    @test correlator(σz, 1, 2, 3) ≈ σz ⊗ σz ⊗ 𝟙
+
+    @test op_list(σy, 2) ≈ [σy ⊗ 𝟙, 𝟙 ⊗ σy]
 end

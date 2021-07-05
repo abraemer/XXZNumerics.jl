@@ -9,7 +9,7 @@ const 𝟙 = spdiagm([1, 1])
 const up = [1,0]
 const down = [0,1]
 
-⊗ = kron
+const ⊗ = kron
 
 speye(k) = spdiagm([1 for _ in 1:k])
 identity_op(k) = speye(2^k)

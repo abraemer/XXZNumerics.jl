@@ -1,4 +1,3 @@
-using Base: _sysimage_modules
 using XXZNumerics
 using Test, Statistics, Random, LinearAlgebra
 
