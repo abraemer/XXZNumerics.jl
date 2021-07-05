@@ -11,13 +11,13 @@ const down = [0,1]
 
 const ⊗ = kron
 
-speye(k) = spdiagm([1 for _ in 1:k])
-identity_op(k) = speye(2^k)
+speye(k::Integer) = spdiagm([1 for _ in 1:k])
+identity_op(k::Integer) = speye(2^k)
 
-single_spin_op(op, k, N) = identity_op(k-1) ⊗ op ⊗ identity_op(N-k)
-correlator(op, i, j, N) = i > j ? correlator(op, j, i, N) : identity_op(i-1) ⊗ op ⊗ identity_op(j-i-1) ⊗ op ⊗ identity_op(N-j)
+single_spin_op(op, k::Integer, N::Integer) = identity_op(k-1) ⊗ op ⊗ identity_op(N-k)
+correlator(op, i::Integer, j::Integer, N::Integer) = i > j ? correlator(op, j, i, N) : identity_op(i-1) ⊗ op ⊗ identity_op(j-i-1) ⊗ op ⊗ identity_op(N-j)
 
-op_list(op, N) = [single_spin_op(op, k, N) for k in 1:N]
+op_list(op, N::Integer) = [single_spin_op(op, k, N) for k in 1:N]
 
 symmetrize_state(state::AbstractVector, sign=1) = (state[1:div(length(state),2)] .+ sign*state[length(state):-1:div(length(state),2)+1])/√2
 symmetrize_state(state::AbstractArray, sign=1) = mapslices(s -> symmetrize_state(s, sign), state; dims=1)
