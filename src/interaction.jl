@@ -36,4 +36,5 @@ struct PowerLaw{T} <: AnisotropeInteraction
     α::T
 end
 
-_interaction_strength(int::PowerLaw, distance) = distance > 0 ? distance^-int.α : 0
+_interaction_strength(int::PowerLaw, distance) = _interaction_strength(int, convert(Float64, distance))
+_interaction_strength(int::PowerLaw, distance::Float64) = float(distance > 0 ? distance^-int.α : 0)

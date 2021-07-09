@@ -44,7 +44,7 @@ end
 
 Compute the distance pairwise between all points.
 """
-function distance_matrix(geometry::Geometry, points)
+function distance_matrix(geometry::Geometry, points::Vector)
     N = length(points)
     res = zeros(Float64, (N, N))
     for i in 1:N
@@ -54,6 +54,8 @@ function distance_matrix(geometry::Geometry, points)
     end
     Symmetric(res)
 end
+
+distance_matrix(geometry::Geometry, points::AbstractMatrix) = distance_matrix(geometry, collect(eachcol(points)))
 
 """
     sample_blockaded(geometry, N; blockade_radius, max_iter)
@@ -121,7 +123,7 @@ Each position is subjected to noise drawn from a box distribution on [-σ, σ].
 - `spacing::Float64`: (mean) distance between two sites
 - `σ::Float64`: width of box distribution for position noise
 """
-struct NoisyChain
+struct NoisyChain <: Geometry
     L::Int64
     spacing::Float64
     σ::Float64
@@ -140,7 +142,7 @@ Each position is subjected to noise drawn from a box distribution on [-σ, σ].
 - `spacing::Float64`: (mean) distance between two sites
 - `σ::Float64`: width of box distribution for position noise
 """
-struct NoisyChainPBC
+struct NoisyChainPBC <: Geometry
     L::Int64
     spacing::Float64
     σ::Float64

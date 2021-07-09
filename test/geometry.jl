@@ -104,4 +104,27 @@
         end
     end
     
+    @testset "distance_matrix" begin
+        N = 10
+        @testset "$geom" for geom in (Box, BoxPBC)
+            @testset "$dim" for dim in 1:3
+                g = geom(4*ones(dim)*N^(1/dim)) # just make the volume big enough to fit all particles in 4x the blockaded volume should be enough
+                points = sample_blockaded(g, N)
+                dists = distance_matrix(g, points)
+                @test size(dists) == (N, N)
+                @test dists ≈ distance_matrix(g, hcat(points...))
+                @test all(>(1), (dists[i,j] for i in 2:N for j in i+1:N))
+            end
+        end
+        @testset "$geom" for geom in (NoisyChain, NoisyChainPBC)
+            @testset "$dim" for dim in 1:3
+                g = geom(N, 1.5, 0.6) # just make the volume big enough to fit all particles in 4x the blockaded volume should be enough
+                points = sample_blockaded(g, N)
+                dists = distance_matrix(g, points)
+                @test size(dists) == (N, N)
+                @test dists ≈ distance_matrix(g, hcat(points...))
+                @test all(>(1), (dists[i,j] for i in 2:N for j in i+1:N))
+            end
+        end
+    end
 end
