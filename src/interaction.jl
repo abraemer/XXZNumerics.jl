@@ -32,9 +32,9 @@ Interaction strength scales proportional to distance to the power -α.
 # Fields
 - `α::T`: Exponent
 """
-struct PowerLaw{T} <: AnisotropeInteraction
-    α::T
+struct PowerLaw <: AnisotropeInteraction
+    α::Float64
+    PowerLaw(α) = new(convert(Float64, α))
 end
 
-_interaction_strength(int::PowerLaw, distance) = _interaction_strength(int, convert(Float64, distance))
 _interaction_strength(int::PowerLaw, distance::Float64) = float(distance > 0 ? distance^-int.α : 0)

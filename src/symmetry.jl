@@ -1,8 +1,10 @@
 module Symmetry
 
 import Base
+import ..XXZNumerics
+using ..XXZNumerics: nspins
 
-export FullZBasis, ZBlockBasis, zbasis, symmetrize_state, symmetrize_op, SpinFlip
+export FullZBasis, ZBlockBasis, zbasis, SpinFlip, symmetrize_state, symmetrize_op, basis_size
 
 """
     abstract type AbstractBasis
@@ -32,13 +34,8 @@ Give size of the Hilbert space for the system.
 function basis_size end
 basis_size(b::AbstractBasis) = length(first(b)[2])
 
-"""
-    nspins(basis)
-
-Give number of spins in the system.
-"""
-nspins(b::AbstractBasis) = nspins(typeof(b))
-nspins(::Type{<:AbstractBasis{N}}) where N = N
+XXZNumerics.nspins(b::AbstractBasis) = nspins(typeof(b))
+XXZNumerics.nspins(::Type{<:AbstractBasis{N}}) where N = N
 
 """
     abstract ZBasis{N} <: AbstractBasis
@@ -64,7 +61,12 @@ end
 basis_size(::ZBasis{N}) where N = 2^N
 _basis_inds(::ZBasis{N}) where N = 1:2^N
 
-struct ZBlockBasis{N, k} <: ZBasis{N}
+"""
+    ZBlockBasis{N, K} <: ZBasis{N}
+
+Basis corresponding to the block of the z-basis where there are k |↓⟩ or equivalently the eigenblock of the S_z operator with eigenvalue 1/2(N-2k).
+"""
+struct ZBlockBasis{N, K} <: ZBasis{N}
     ZBlockBasis(N::Int, k::Int) = 0 <= k <= N ? new{N, k}() : throw(ArgumentError("block index k=$k must be between (or equal to) 0 and N=$(N)!"))
 end
 
@@ -94,13 +96,26 @@ function _zblock_inds!(states, N, k)
 end
 
 ## convenience constructors
+"""
+    zbasis(N [, k])
+
+Construct a Basis object representing the z-basis or the block thereof, where there are k |↓⟩.
+"""
 zbasis(N) = FullZBasis(N)
 zbasis(N, k) = ZBlockBasis(N, k)
 
 
 abstract type AbstractSymmetry{N, B<:AbstractBasis{N}} <: AbstractBasis{N} end
 
-function symmetrize_state(b::AbstractBasis, state)
+"""
+    symmetrize_state(basis, state)
+
+Project state into the given (symmetrized) basis. 
+
+Note: This function works only full, not-yet symmetrized states!
+To combine different symmetries, combine the symmetry objects and then call symmetrize_state once!
+"""
+function XXZNumerics.symmetrize_state(b::AbstractBasis, state)
     res = similar(state, float(eltype(state)), basis_size(b))
     fill!(res, 0)
     for (coeff, indices) in b
@@ -109,7 +124,15 @@ function symmetrize_state(b::AbstractBasis, state)
     res
 end
 
-function symmetrize_op(b::AbstractBasis, op)
+"""
+    symmetrize_op(basis, op)
+
+Project operator into the given (symmetrized) basis. 
+
+Note: This function works only full, not-yet symmetrized operators
+To combine different symmetries, combine the symmetry objects and then call symmetrize_op once!
+"""
+function XXZNumerics.symmetrize_op(b::AbstractBasis, op)
     res = similar(op, float(eltype(op)), (basis_size(b), basis_size(b)))
     fill!(res, 0)
     for (coeff, indices) in b
@@ -120,13 +143,10 @@ function symmetrize_op(b::AbstractBasis, op)
     res
 end
 
-# struct CompositeSymmetry{T} <: AbstractSymmetry
-#     inner::T
-# end
-# basis_size(cs::CompositeSymmetry) = mapreduce(size, *, cs.inner)
-
 """
-    SpinFlip{P} <: AbstractSymmetry
+    SpinFlip{P, N, B} <: AbstractSymmetry
+
+Symmetry under total spinflip (ie. σx on all spins simultaneously) with parity P. P can be +1 or -1.
 """
 struct SpinFlip{P, N, B} <: AbstractSymmetry{N, B}
     basis::B

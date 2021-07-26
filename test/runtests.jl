@@ -1,4 +1,3 @@
-using LinearAlgebra: symmetric
 using XXZNumerics
 using Test, Statistics, Random, LinearAlgebra
 
