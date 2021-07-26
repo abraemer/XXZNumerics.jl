@@ -4,6 +4,8 @@
         p1 = PowerLaw(1)
         p2 = PowerLaw(2)
 
+        @test p2 == PowerLaw(2.0) == PowerLaw(2//1)
+
         geom = Box([2,2])
         points = sample_blockaded(geom, 2)
         distances = distance_matrix(geom, points)
