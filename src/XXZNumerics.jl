@@ -11,5 +11,6 @@ include("interaction.jl")
 include("spin_half.jl")
 include("hamiltonian.jl")
 include("thermalization.jl")
+include("symmetry.jl")
 
 end

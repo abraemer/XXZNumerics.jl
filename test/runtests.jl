@@ -1,4 +1,4 @@
-using Base: escape_microsoft_c_args
+using LinearAlgebra: symmetric
 using XXZNumerics
 using Test, Statistics, Random, LinearAlgebra
 
@@ -13,4 +13,6 @@ using Test, Statistics, Random, LinearAlgebra
     include("hamiltonian.jl")
 
     include("thermalization.jl")
+
+    include("symmetry.jl")
 end
