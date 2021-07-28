@@ -1,5 +1,16 @@
 @testset "spin_half.jl" begin
  
+    @testset "nspins" begin
+        for N in 0:10
+            @test nspins(2^N) == N
+            @test nspins(collect(1:2^N)) == N
+            @test nspins(zeros(2^N, 2^N)) == N
+        end
+        @test_throws ArgumentError nspins(collect(1:3))
+        @test_throws ArgumentError nspins(zeros(3,3))
+        @test_throws ArgumentError nspins(zeros(2,4))
+    end
+
     @testset "single_spin_op" begin
         @test single_spin_op(σz, 1, 2) ≈ Diagonal([1,1,-1,-1])
         @test single_spin_op(σz, 2, 2) ≈ Diagonal([1,-1,1,-1])
