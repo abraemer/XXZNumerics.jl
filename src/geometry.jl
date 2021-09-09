@@ -89,7 +89,7 @@ Geometry representing a simple box with given lengths.
 # Fields
 - `lengths::Vector{T}`: stores the lengths of the individual dimensions
 """
-struct Box{T} <: Geometry 
+struct Box{T} <: Geometry
     lengths::Vector{T}
 end
 

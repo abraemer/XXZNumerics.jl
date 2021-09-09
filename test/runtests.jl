@@ -13,5 +13,4 @@ using Test, Statistics, Random, LinearAlgebra
 
     include("thermalization.jl")
 
-    include("symmetry.jl")
 end

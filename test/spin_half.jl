@@ -1,5 +1,5 @@
 @testset "spin_half.jl" begin
- 
+
     @testset "nspins" begin
         for N in 0:10
             @test nspins(2^N) == N
@@ -23,23 +23,6 @@
 
         @test_throws MethodError single_spin_op(σz, 1.5, 3) # bogus site - not integer
         @test_throws MethodError correlator(𝟙, 1, 2, 2.5) # bogus length
-    end
-
-    @testset "symmetrize_state" begin
-        # basics
-        @test symmetrize_state(up ⊗ down) ≈ (up ⊗ down + down ⊗ up)[1:2]/√2
-        @test symmetrize_state(up ⊗ down, -1) ≈ (up ⊗ down - down ⊗ up)[1:2]/√2
-        @test symmetrize_state(up ⊗ down ⊗ down) ≈ (up ⊗ down ⊗ down + down ⊗ up ⊗ up)[1:4]/√2
-
-        # multiple states
-        @test symmetrize_state(hcat(up ⊗ down, down ⊗ up, up ⊗ up)) ≈ hcat(symmetrize_state(up ⊗ down), symmetrize_state(down ⊗ up), symmetrize_state(up ⊗ up))
-    end
-
-    @testset "symmetrize_op" begin
-        @test symmetrize_op(σz ⊗ σz) ≈ σz
-        @test symmetrize_op(σz ⊗ σz, -1) ≈ σz
-        @test symmetrize_op(σx ⊗ σx) ≈ identity_op(1)
-        @test symmetrize_op(σx ⊗ σx + σy ⊗ σy) ≈ Diagonal([0, 2]) # hopping operator
     end
 
     @testset "correlator" begin
