@@ -12,3 +12,4 @@ Includes:
 - a basic interface to convert particle positions to interaction strength (only `PowerLaw` is implemented)
 - methods for generating an XXZ Hamiltonian and field term
 - methods for computing thermal quantum ensembles
+- basic support for entanglement entropy
