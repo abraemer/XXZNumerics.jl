@@ -9,6 +9,8 @@ using Test, Statistics, Random, LinearAlgebra
 
     include("spin_half.jl")
 
+    include("entropy.jl")
+
     include("hamiltonian.jl")
 
     include("thermalization.jl")
