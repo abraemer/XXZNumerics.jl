@@ -10,7 +10,7 @@ Where pᵢ are the eigenvalues of ρ.
 function entropy(evals::AbstractVector)
 	T = typeof(log(one(eltype(evals))))
 	cutoff = convert(T, 1e-16)
-	- sum(eval*log2(eval) for eval in Iterators.filter(>(cutoff), evals); init=0)
+	- sum(eval*log2(eval) for eval in Iterators.filter(>(cutoff), evals); init=zero(T))
 end
 
 entropy(ρ::AbstractMatrix) = entropy(eigvals(ρ))
