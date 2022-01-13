@@ -1,4 +1,4 @@
-export fieldterm, xxzmodel, hopping
+export fieldterm, xxzmodel, hopping, z_field
 
 
 _get_interaction(J::AbstractMatrix, i, j) = J[i,j]
@@ -26,7 +26,7 @@ function xxzmodel(N,J,Δ)
     entries = 2^N + 2^(N-2)*N*(N-1)
     A,B,V = zeros(Int, entries), zeros(Int, entries), zeros(float(promote_type(eltype(J), typeof(Δ))), entries)
 
-    @views _zcorrelator!(A[1:2^N],B[1:2^N],V[1:2^N], N, J)
+    @views _zcorrelator_coo!(A[1:2^N],B[1:2^N],V[1:2^N], N, J)
     V[1:2^N] .*= Δ
 
     @views _hopping!(A[2^N+1:end], B[2^N+1:end], V[2^N+1:end], N, J)
@@ -43,7 +43,7 @@ function xxzmodel(N,J,Δ)
 end
 
 """
-    _zcorrelator!(A, B, V, J)
+    _zcorrelator_coo!(A, B, V, J)
 
 Generate the COO vectors of ∑ᵢⱼJᵢⱼ σzⁱσzʲ.
 
@@ -54,7 +54,7 @@ Generate the COO vectors of ∑ᵢⱼJᵢⱼ σzⁱσzʲ.
 
 `A`,`B` and `V` need to have length 2^N.
 """
-function _zcorrelator!(A,B,V, N, J)
+function _zcorrelator_coo!(A,B,V, N, J)
     A[:] .= 1:2^N
     B[:] .= 1:2^N
     V[:] .= 0
@@ -190,5 +190,41 @@ function _hopping_coordinates!(A,B,N,i,j)
             A[currentIndex .+ (1:sec3)] .= rowOffset2 .+ (sec3+1:2sec3) # right columns
             currentIndex += sec3
         end
+    end
+end
+
+
+z_field(N::Int) = z_field(ones(N))
+
+function z_field(field_values::Vector)
+    N = length(field_values)
+    ret = zeros(2^N)
+    for (i,hz) in enumerate(field_values)
+        _z_field_values!(ret, N, hz, i)
+    end
+    return Diagonal(ret)
+end
+
+"""
+    _z_field!(V, N, hz, i)
+
+*ADD* to `V` the diagonal of hz σzⁱ.
+
+# Parameters
+ - `V` array of length 2^`N`. Will be mutated!
+ - `N` number of sites in the system
+ - `hz` field strength
+ - `i` site to act on
+"""
+function _z_field_values!(V, N, hz, i)
+    # σz^(i) = 𝟙(sec1) ⊗ σz ⊗  𝟙(sec2)
+    sec1 = 2^(i-1)
+    sec2 = 2^(N-i)
+
+    blocksize2 = 2sec2 # σz ⊗ 𝟙(sec2)
+
+    for offset1 in blocksize2 .* (0:sec1-1)
+        V[offset1 .+ (1:sec2)] .+= hz
+        V[offset1 .+ (sec2+1:2sec2)] .-= hz
     end
 end

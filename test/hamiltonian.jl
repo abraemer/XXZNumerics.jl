@@ -40,4 +40,10 @@
             @test xxzmodel(J,-0.7) ≈ xxzmodel_old(N, J, -0.7)
         end
     end
+
+    @testset "z_field" begin
+        @test diag(z_field(3)) == [3,1,1,-1,1,-1,-1,-3]
+        @test diag(z_field([1,2,3])) == [6,0,2,-4,4,-2,0,-6]
+        @test abs(sum(z_field(rand(10)))) < 1e-13 # can be suprisingly large with ~1e-14
+    end
 end
