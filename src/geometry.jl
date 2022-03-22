@@ -155,13 +155,18 @@ distance(chain::NoisyChainPBC, p1, p2) = _euclidean_pbc(p1, p2, chain.L * chain.
 
 generate_point(chain::Union{NoisyChain, NoisyChainPBC}, site=1) = chain.σ * (2*rand()-1) + site*chain.spacing
 
-function _find_new_point(chain::Union{NoisyChain, NoisyChainPBC}, points, blockade_radius, max_iter)
-    site = length(points) + 1
-    for _ in 1:max_iter
-        p = generate_point(chain, site)
-        if all(map(p2 -> distance(chain, p, p2) > blockade_radius, points))
-            return p
-        end
+#
+# Do not generate points sequentially for the chain geometries.
+# While it is more efficient, it also introduces additional dependencies between the positions.
+#
+function sample_blockaded(chain::Union{NoisyChain, NoisyChainPBC}, N; blockade_radius=1, max_iter=1000)
+    points = Vector{Float64}(undef, N)
+    points .= generate_point.(Ref(chain), 1:N)
+    iteration = 0
+    while !all(>(blockade_radius), distance_matrix(chain, points)+2*I(N))
+        iteration >= max_iter && error("Iteration limit reached! Could not find $(N) points in $chain geometry with $max_iter iterations.")
+        iteration += 1
+        points .= generate_point.(Ref(chain), 1:N)
     end
-    error("Iteration limit reached! Could not find a $(length(points)+1)th point in $chain geometry with $max_iter iterations.")
+    return points
 end
