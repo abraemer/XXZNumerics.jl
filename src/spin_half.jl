@@ -1,4 +1,4 @@
-export σx, σy, σz, 𝟙, up, down, ⊗, speye, identity_op, single_spin_op, correlator, op_list, symmetrize_state, symmetrize_op, nspins
+export σx, σy, σz, 𝟙, up, down, ⊗, speye, identity_op, single_spin_op, correlator, op_list, nspins
 
 
 const σx = sparse([0 1; 1 0])
